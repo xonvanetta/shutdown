@@ -26,12 +26,8 @@ func main() {
 
 	<-shutdown.Chan()
 	log.Println("shutdown was called")
-	ctx, cancel := context.WithCancel(context.TODO())
-	go func() {
-		time.Sleep(time.Second * 30)
-		cancel()
-	}()
-
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer cancel()
 	err := server.Shutdown(ctx)
 	if err != nil {
 		log.Fatalf("failed to do graceful shutdown for given time: %s", err)
