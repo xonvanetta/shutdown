@@ -9,6 +9,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestBuffered(t *testing.T) {
+	process, err := os.FindProcess(os.Getpid())
+	assert.NoError(t, err)
+
+	go func() {
+		time.Sleep(time.Millisecond)
+		err := process.Signal(os.Interrupt)
+		assert.NoError(t, err)
+	}()
+
+	time.Sleep(time.Millisecond * 10)
+	select {
+	case <-Chan():
+	case <-time.After(time.Second):
+		assert.Fail(t, "shutdown never happened")
+	}
+}
+
 func TestChan(t *testing.T) {
 	testShutdown(t, Chan())
 }
