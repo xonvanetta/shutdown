@@ -11,7 +11,7 @@ func init() {
 	signal.Notify(signals, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 }
 
-var signals = make(chan os.Signal)
+var signals = make(chan os.Signal, 1)
 
 func Chan() <-chan struct{} {
 	shutdown := make(chan struct{})
